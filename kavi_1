@@ -1,3 +1,63 @@
 This is new file
 
 Domain Generating Algorithms are in use by cybercriminals to prevent their servers from being blacklisted or taken down. The algorithm produces random looking domain names. The idea is that two machines using the same algorithm will contact the same domain at a given time, so they will be able to exchange information or fetch instructions.
+
+
+here bind_variables is empty
+
+$array_ref = &Get_N_Rows($dbh,$sql_str,@bind_vars);
+my $dbh = DBI->connect("DBI:Oracle:$instance", "$dbusr", "$dbpasswd")
+                or die "Couldn't connect to database: " . DBI->errstr;
+  
+  #prepare stmt
+  $sth = $dbh->prepare($sql_str) or 
+  die "Couldn't Prepare Statement: " . DBI->errstr;
+
+  #execute
+  if (@bind_vals)
+  {
+    $sth->execute(@bind_vals) or 
+     die "Couldn't Execute Statement: " . DBI->errstr;
+  }
+  else
+  {
+    $sth->execute() or 
+    die "Couldn't Execute Statement: " . DBI->errstr;
+  }
+
+  #get all rows for given select
+  $array_ref = $sth->fetchall_arrayref({});
+  
+  #done with statment
+  $sth->finish();
+  
+  return($array_ref);
+  
+  
+  
+  my $dbh = DBI->connect("dbi:Oracle:$db", "$dbuser", "$dbpwd", {RaiseError => 0, PrintError => 0});
+	
+	if (defined $dbh) {
+		my $array_ref = ();
+		$array_ref = $dbh->selectall_arrayref($mySql);
+		if (defined $array_ref) {
+			for ($myXVar = 0;exists $array_ref->[$myXVar];$myXVar++) {
+				my $row = "";
+				for ($myYVar = 0;exists $array_ref->[$myXVar][$myYVar];$myYVar++) {
+					#print "-- $array_ref->[$myXVar][$myYVar]\|\n";
+					my $item = $array_ref->[$myXVar][$myYVar];
+					$item =~ s/^\s+|\s+$//g;;
+					chomp $row;
+					if ($row eq "") {
+						$row = "$item";
+					}
+					else {
+						$row = "$row$sChr$item";
+					}
+				}
+				push @thevalues, $row;
+			}
+		}
+		$dbh->disconnect;
+	}
+	@thevalues;
