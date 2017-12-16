@@ -1,0 +1,252 @@
+
+Sub Clear()
+Sheets("for_ticket_tracker").Select
+With ActiveSheet
+last_row = .Cells(.Rows.Count, "D").End(xlUp).Row
+End With
+Call format1
+If last_row >= 2 Then
+Sheets("for_ticket_tracker").Range(Cells(2, 1), Cells(last_row, 20)).Clear
+End If
+Sheets("for_ticket_tracker").Range("D2").Select
+End Sub
+
+Sub cmdb_update()
+Sheets("CMDB").Range("A2:C300").ClearContents
+Sheets("Deployment").Select
+With ActiveSheet
+last_row = .Cells(.Rows.Count, "B").End(xlUp).Row
+'MsgBox last_row
+End With
+k = 2
+Sheets("CMDB").Cells(1, 1).Value = "Ticket#"
+Sheets("CMDB").Cells(1, 2).Value = "Status"
+Sheets("CMDB").Cells(1, 3).Value = "Worked by"
+    
+ Sheets("CMDB").Select
+ Range("A1:C1").Select
+    Selection.Font.Bold = True
+For i = 1 To last_row
+
+If (Sheets("Deployment").Cells(i, 2).Interior.Color = 65535) Then
+Sheets("CMDB").Cells(k, 1).Value = Sheets("Deployment").Cells(i, 2).Value
+Sheets("CMDB").Cells(k, 2).Value = "To be updated in CMDB"
+'Sheets("Sheet4").Range("F2").Value
+Sheets("CMDB").Cells(k, 3).Value = "Kaviarasu"
+'Sheets("Sheet4").Range("G2").Value
+k = k + 1
+ElseIf (Sheets("Deployment").Cells(i, 2).Interior.Color = 49407) Then
+Sheets("CMDB").Cells(k, 1).Value = Sheets("Deployment").Cells(i, 2).Value
+Sheets("CMDB").Cells(k, 2).Value = "Work in progress"
+'Sheets("Sheet4").Range("F3").Value
+Sheets("CMDB").Cells(k, 3).Value = "Kaviarasu"
+'Sheets("Sheet4").Range("G3").Value
+k = k + 1
+End If
+Next i
+Sheets("CMDB").Select
+With ActiveSheet
+    Range("A1").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.Borders(xlInsideHorizontal).Weight = xlThin
+    Selection.Borders(xlInsideVertical).Weight = xlThin
+    Selection.Borders(xlEdgeBottom).Weight = xlThin
+    Selection.Borders(xlEdgeTop).Weight = xlThin
+    Selection.Borders(xlEdgeLeft).Weight = xlThin
+    Selection.Borders(xlEdgeRight).Weight = xlThin
+End With
+
+With ActiveWorkbook.Worksheets("CMDB").Sort
+.SortFields.Clear
+.SortFields.Add Key:=Range("B2:B300"), _
+SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+        .SetRange Range("A1:C300")
+        .Header = xlYes
+        .MatchCase = False
+        .Orientation = xlTopToBottom
+        .SortMethod = xlPinYin
+        .Apply
+    End With
+End Sub
+
+Sub ticket_tracker()
+'Sheets.Add before:=for_ticket_tracker
+Sheets("for_ticket_tracker").Select
+With ActiveSheet
+.Range("A1:T1").HorizontalAlignment = xlCenter
+.Cells(1, 1).Value = "Work day (Date)#"
+.Cells(1, 2).Value = "HPSM workgroup  Name"
+.Cells(1, 3).Value = "App Area"
+.Cells(1, 4).Value = "IM Ticket#"
+.Cells(1, 5).Value = "Description"
+.Cells(1, 6).Value = "Priorty"
+.Cells(1, 7).Value = "Severity"
+.Cells(1, 8).Value = "Ticket Source"
+.Cells(1, 9).Value = "Ticket Created By"
+.Cells(1, 10).Value = "Is the ticket resolved through KEDB? (Y/N)"
+.Cells(1, 11).Value = "Assignee Name"
+.Cells(1, 12).Value = "Effort in (Hrs.)"
+.Cells(1, 13).Value = "Assignment Status "
+.Cells(1, 14).Value = "Ticket Creation Date & Time"
+.Cells(1, 15).Value = "Ticket Assigned Date & Time"
+.Cells(1, 16).Value = "Resolution Date & Time"
+.Cells(1, 17).Value = "Ticket Closure Date & Time"
+.Cells(1, 18).Value = "Outage Start Date & Time(In case of system outage)"
+.Cells(1, 19).Value = "Outage End Date & Time(In case of system outage)"
+.Cells(1, 20).Value = "RCA Required?"
+
+.Range("A1:T1").Font.Bold = True
+.Range("A1:T1").Interior.Color = 65535
+
+End With
+Sheets("for_ticket_tracker").Select
+With ActiveSheet
+last_row1 = .Cells(.Rows.Count, "B").End(xlUp).Row
+last_row = .Cells(.Rows.Count, "D").End(xlUp).Row
+End With
+If (last_row1 > 1) Then
+Sheets("for_ticket_tracker").Range(Cells(2, 1), Cells(last_row1, 3)).Select
+Selection.Clear
+Sheets("for_ticket_tracker").Range(Cells(2, 5), Cells(last_row1, 20)).Select
+Selection.Clear
+End If
+Sheets("export").Select
+With ActiveSheet
+last_export_row = .Cells(.Rows.Count, "A").End(xlUp).Row
+End With
+For i = 2 To last_row
+
+    For j = 2 To last_export_row
+    If (Trim(Sheets("for_ticket_tracker").Cells(i, 4).Value) = Trim(Sheets("export").Cells(j, 1).Value)) Then
+     'Sheets("for_ticket_tracker").Cells(i, 1).Value = Sheets("export").Cells(j, 4).Value
+     Sheets("for_ticket_tracker").Cells(i, 2).Value = "Sel Seg CM"
+     Sheets("for_ticket_tracker").Cells(i, 3).Value = "Sel Seg CM"
+     Sheets("for_ticket_tracker").Cells(i, 5).Value = Sheets("export").Cells(j, 4).Value
+     Sheets("for_ticket_tracker").Cells(i, 6).Value = "P3"
+     Sheets("for_ticket_tracker").Cells(i, 7).Value = "Low"
+     Sheets("for_ticket_tracker").Cells(i, 8).Value = "Ticketing tool"
+     Sheets("for_ticket_tracker").Cells(i, 9).Value = Sheets("export").Cells(j, 7).Value + " " + Sheets("export").Cells(j, 8).Value
+     Sheets("for_ticket_tracker").Cells(i, 10).Value = "N"
+     Sheets("for_ticket_tracker").Cells(i, 11).Value = "Kaviarasu"
+     Sheets("for_ticket_tracker").Cells(i, 12).Value = "0.50"
+     If (Sheets("export").Cells(j, 3).Value = "Closed" Or Sheets("export").Cells(j, 3).Value = "Resolved") Then
+     Sheets("for_ticket_tracker").Cells(i, 13).Value = "Closed"
+     Else
+     Sheets("for_ticket_tracker").Cells(i, 13).Value = "Monitoring"
+     End If
+     Sheets("for_ticket_tracker").Cells(i, 14).Value = Sheets("export").Cells(j, 2).Value
+     'Sheets("for_ticket_tracker").Cells(i, 15).Value = Sheets("export").Cells(j, 4).Value
+     If (Sheets("export").Cells(j, 10).Value <> 0) Then
+        Sheets("for_ticket_tracker").Cells(i, 16).Value = (Sheets("export").Cells(j, 10).Value)
+     Else
+        Sheets("for_ticket_tracker").Cells(i, 16).Value = (Sheets("export").Cells(j, 6).Value)
+     End If
+     If (Sheets("export").Cells(j, 10).Value <> 0) Then
+        Sheets("for_ticket_tracker").Cells(i, 17).Value = (Sheets("export").Cells(j, 10).Value)
+     Else
+        Sheets("for_ticket_tracker").Cells(i, 17).Value = (Sheets("export").Cells(j, 6).Value)
+     End If
+     End If
+    Next j
+    Sheets("Deployment").Select
+With ActiveSheet
+last_dev = .Cells(.Rows.Count, "B").End(xlUp).Row
+End With
+Sheets("Software_install").Select
+With ActiveSheet
+last_soft = .Cells(.Rows.Count, "B").End(xlUp).Row
+End With
+Sheets("Id_tickets").Select
+With ActiveSheet
+last_id = .Cells(.Rows.Count, "B").End(xlUp).Row
+End With
+Sheets("Deployment").Cells(i, 1).Clear
+For x = 1 To last_dev
+    If (Trim(Sheets("for_ticket_tracker").Cells(i, 4).Value) = Trim(Sheets("Deployment").Cells(x, 2).Value)) Then
+    Sheets("for_ticket_tracker").Cells(i, 1).Value = Sheets("Deployment").Cells(x, 1).Value
+    End If
+  Next x
+  If (Sheets("Deployment").Cells(x, 1).Value = 0) Then
+  For y = 1 To last_dev
+    If (Trim(Sheets("for_ticket_tracker").Cells(i, 4).Value) = Trim(Sheets("Software_install").Cells(y, 2).Value)) Then
+    Sheets("for_ticket_tracker").Cells(i, 1).Value = Sheets("Software_install").Cells(y, 1).Value
+    End If
+  Next y
+  End If
+  If (Sheets("Deployment").Cells(x, 1).Value = 0) Then
+  For Z = 1 To last_dev
+    If (Trim(Sheets("for_ticket_tracker").Cells(i, 4).Value) = Trim(Sheets("Id_tickets").Cells(Z, 2).Value)) Then
+    Sheets("for_ticket_tracker").Cells(i, 1).Value = Sheets("Id_tickets").Cells(Z, 1).Value
+    End If
+  Next Z
+  End If
+  Sheets("for_ticket_tracker").Cells(i, 15).Value = Sheets("for_ticket_tracker").Cells(i, 1).Value
+Next i
+Sheets("for_ticket_tracker").Select
+With ActiveSheet
+lastrow = .Cells(.Rows.Count, "D").End(xlUp).Row
+End With
+If (Trim(Sheets("for_ticket_tracker").Range("D2").Value) <> "" And lastrow > 2) Then
+    ActiveSheet.Range("A2:Q2").Select
+    ActiveSheet.Range(Selection, Selection.End(xlDown)).Select
+    Selection.Font.Size = 9
+    Selection.Borders(xlInsideHorizontal).Weight = xlThin
+    Selection.Borders(xlInsideVertical).Weight = xlThin
+    Selection.Borders(xlEdgeBottom).Weight = xlThin
+    Selection.Borders(xlEdgeTop).Weight = xlThin
+    Selection.Borders(xlEdgeLeft).Weight = xlThin
+    Selection.Borders(xlEdgeRight).Weight = xlThin
+End If
+Selection.Cells(1, 1).Select
+End Sub
+Function format1()
+    Range("A1:T1").Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideVertical)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideHorizontal)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    
+    With ActiveWindow
+        .SplitColumn = 0
+        .SplitRow = 1
+    End With
+    ActiveWindow.FreezePanes = True
+
+End Function
+
+ 
