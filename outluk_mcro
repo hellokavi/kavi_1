@@ -1,0 +1,1570 @@
+#outluk mcro
+Sub AttachNewestFile()
+' You need to set a reference to the scripting object
+Dim objMail As Outlook.MailItem
+Dim fso As Scripting.FileSystemObject
+ 
+ Dim strFile As String
+ Dim fsoFile As Scripting.File
+ Dim fsoFldr As Scripting.Folder
+ Dim dtNew As Date, sNew As String
+ 
+ Set fso = New Scripting.FileSystemObject
+ 
+ strFile = "\\wdcnap005\gwhis_Projects\Support\CTS\Kavi\Attachment\"
+   
+ Set fsoFldr = fso.GetFolder(strFile)
+     
+     For Each fsoFile In fsoFldr.Files
+	' check the extension and age
+         If fsoFile.Name = "KT_topics.xlsx" Then
+             sNew = fsoFile.Path
+             dtNew = fsoFile.DateLastModified
+             Debug.Print sNew & dtNew
+         End If
+     Next fsoFile
+ 
+ 'Create e-mail item
+ Set objMail = Application.CreateItem(olMailItem)
+
+ With objMail
+ .BodyFormat = olFormatHTML
+ .HTMLBody = "Here is the file you asked for"
+ .Attachments.Add sNew
+ .Display
+ End With
+End Sub
+Sub Create_Nightly_Batch_Status_Email()
+    Dim objOLApp As Outlook.Application
+    Dim NewMail As Outlook.MailItem
+    Set objOLApp = New Outlook.Application
+    Dim olapp As Outlook.Application, olNs As Outlook.NameSpace
+    Dim olFolder As Outlook.MAPIFolder, olmail As Outlook.MailItem
+    Dim eFolder As Outlook.Folder '~~> additional declaration
+    Dim i As Long
+    Dim usrname  As String
+    Dim x As Date ', ws As Worksheet '~~> declare WS variable instead
+
+    Set olapp = New Outlook.Application
+    Set olNs = olapp.GetNamespace("MAPI")
+    'x = Date
+    x = Format(DateAdd("d", -1, Date))
+    exittime = Format(DateAdd("d", -2, Date))
+    'For Each eFolder In olNs.GetDefaultFolder(olFolderInbox).Folders
+    'Debug.Print eFolder.Name
+    Set olFolder = olNs.GetDefaultFolder(olFolderInbox)
+    
+For Each olmail In olFolder.Items
+    'For i = 1 To olFolder.Items.Count
+    'For i = 1 To 165
+    On Error Resume Next
+        If TypeOf olmail Is MailItem Then
+         '   Set olmail = olFolder.Items(i)
+            If (InStr(olmail.ReceivedTime, exittime) > 0) Then
+                'MsgBox olmail.Subject
+                Exit For
+            ElseIf (FPROD <> "" And FPVS1 <> "" And FSUPP1 <> "" And FTEST2 <> "" And FTEST7 <> "" And CONFIG_DEV <> "" And FDEV5 <> "" And FDEV6 <> "" And FTRAIN1 <> "") Then
+                Exit For
+            End If
+            If InStr(olmail, "FPROD Facets Nightly Batch has completed!") > 0 Then
+                If (olmail.Sender = "C SYS ETL" And FPROD = "") Then
+                    mtime = olmail.ReceivedTime
+                    timeary1 = Split(mtime, " ")
+                    timeary2 = Split(timeary1(1), ":")
+                    FPROD = timeary2(0) & "." & timeary2(1) & " " & timeary1(2) & " MT"
+                End If
+                'MsgBox "FPROD Facets Nightly Batch has completed at " & olMail.ReceivedTime
+            ElseIf InStr(olmail, "FPVS1 Facets Nightly Batch has completed!") > 0 Then
+                If (olmail.Sender = "C SYS ETL" And FPVS1 = "") Then
+                    mtime = olmail.ReceivedTime
+                    timeary1 = Split(mtime, " ")
+                    timeary2 = Split(timeary1(1), ":")
+                    FPVS1 = timeary2(0) & "." & timeary2(1) & " " & timeary1(2) & " MT"
+                End If
+                'MsgBox "FPVS1 Facets Nightly Batch has completed at " & olMail.ReceivedTime
+            ElseIf InStr(olmail, "FSUPP1 Facets Nightly Batch has completed!") > 0 Then
+                If (olmail.Sender = "C SYS ETL" And FSUPP1 = "") Then
+                    mtime = olmail.ReceivedTime
+                    timeary1 = Split(mtime, " ")
+                    timeary2 = Split(timeary1(1), ":")
+                    FSUPP1 = timeary2(0) & "." & timeary2(1) & " " & timeary1(2) & " MT"
+                End If
+                'MsgBox "FSUPP1 Facets Nightly Batch has completed at " & olMail.ReceivedTime
+            ElseIf InStr(olmail, "FTEST2 Facets Nightly Batch has completed!") > 0 Then
+                If (olmail.Sender = "C SYS ETL" And FTEST2 = "") Then
+                    mtime = olmail.ReceivedTime
+                    timeary1 = Split(mtime, " ")
+                    timeary2 = Split(timeary1(1), ":")
+                    FTEST2 = timeary2(0) & "." & timeary2(1) & " " & timeary1(2) & " MT"
+                End If
+                'MsgBox "FTEST2 Facets Nightly Batch has completed at " & olMail.ReceivedTime
+            ElseIf InStr(olmail, "FTEST7 Facets Nightly Batch has completed!") > 0 Then
+                If (olmail.Sender = "C SYS ETL" And FTEST7 = "") Then
+                    mtime = olmail.ReceivedTime
+                    timeary1 = Split(mtime, " ")
+                    timeary2 = Split(timeary1(1), ":")
+                    FTEST7 = timeary2(0) & "." & timeary2(1) & " " & timeary1(2) & " MT"
+                End If
+                'MsgBox "FTEST7 Facets Nightly Batch has completed at " & olMail.ReceivedTime
+            ElseIf InStr(olmail, "CONFIG_DEV Facets Nightly Batch has completed!") > 0 Then
+                If (olmail.Sender = "C SYS ETL" And CONFIG_DEV = "") Then
+                    mtime = olmail.ReceivedTime
+                    timeary1 = Split(mtime, " ")
+                    timeary2 = Split(timeary1(1), ":")
+                    CONFIG_DEV = timeary2(0) & "." & timeary2(1) & " " & timeary1(2) & " MT"
+                End If
+                'MsgBox "CONFIG_DEV Facets Nightly Batch has completed at " & olMail.ReceivedTime
+            ElseIf InStr(olmail, "FDEV5 Facets Nightly Batch has completed!") > 0 Then
+                If (olmail.Sender = "C SYS ETL" And FDEV5 = "") Then
+                    mtime = olmail.ReceivedTime
+                    timeary1 = Split(mtime, " ")
+                    timeary2 = Split(timeary1(1), ":")
+                    FDEV5 = timeary2(0) & "." & timeary2(1) & " " & timeary1(2) & " MT"
+                End If
+                'MsgBox "FDEV5 Facets Nightly Batch has completed at " & olMail.ReceivedTime
+            ElseIf InStr(olmail, "CONFIG_DEV Facets Nightly Batch has completed!") > 0 Then
+                If (olmail.Sender = "C SYS ETL" And FDEV6 = "") Then
+                    mtime = olmail.ReceivedTime
+                    timeary1 = Split(mtime, " ")
+                    timeary2 = Split(timeary1(1), ":")
+                    FDEV6 = timeary2(0) & "." & timeary2(1) & " " & timeary1(2) & " MT"
+                End If
+                'MsgBox "FDEV6 Facets Nightly Batch has completed at " & olMail.ReceivedTime
+            ElseIf InStr(olmail, "FTRAIN1 Facets Nightly Batch has completed!") > 0 Then
+                If (olmail.Sender = "C SYS ETL" And FTRAIN1 = "") Then
+                    mtime = olmail.ReceivedTime
+                    timeary1 = Split(mtime, " ")
+                    timeary2 = Split(timeary1(1), ":")
+                    FTRAIN1 = timeary2(0) & "." & timeary2(1) & " " & timeary1(2) & " MT"
+                End If
+                'MsgBox "FTRAIN1 Facets Nightly Batch has completed at " & olMail.ReceivedTime
+            End If
+        End If
+    Next
+    Set olFolder = Nothing
+    Set NewMail = objOLApp.CreateItem(olMailItem)
+    NewMail.Display
+    subj = "Nightly Batch Status " & Date
+    NewMail.Subject = subj
+    usr = Environ("username")
+    If (usr = "M76661") Then
+        usrname = "Kaviarasu.S"
+    ElseIf (usr = "M24066") Then
+        usrname = "K Suresh"
+    ElseIf (usr = "M53470") Then
+        usrname = "Johny Felix P"
+    ElseIf (usr = "M73448") Then
+        usrname = "Sandeep J"
+    End If
+    plink = "<u>\\its\GWHIS\grphome\Projects\Support\Facets_Batch_Support\Nightly_Batch_Status</u>"
+    Signature = "<font style='color: black; font-family:Calibri; font-size: 10pt;'>" & "Thanks<br>" & "Regards,<br>" & usrname & _
+    "<br>" & "Core Solutions - Sel Seg Scheduling.<br>" & "</font>"
+    Signature = Signature & "<font style='color: black; font-family:Calibri; font-size: 9pt;'>" & _
+    "Confidential, unpublished property of Cigna. Do not duplicate or distribute. Use and distribution limited solely to authorized personnel. © Copyright " & Year(Date) & " CIGNA." & "</font>"
+    NewMail.HTMLBody = "<font style='color: black; font-family:Calibri; font-size: 11pt;'>" & _
+    "Hi Team,<br><br>" & "Please find below the Nightly batch status today.<br><br>" & _
+    "<b><u>Nightly Batch:</u></b><br><br>" & "Nightly batch completed by " & FPROD & "<br><br>" & _
+    "<b><u>Production Environment:</u></b><br><br>" & "CKMM ran for  mins.<br><br>" & _
+    "<b><u>Medical XPF(WNHMA701) jobs:</u></b><br><br>" & "The Medical XPF jobs ran for mins.<br><br>" & _
+    "<b><u>Production Failures:</u></b><br><br><br>" & "<b><u>Non production Environment Failures :</u></b><br><br><br>" & _
+    "<b><u>Batch completion timings:</u></b><br><br>" & _
+    "FSUPP1  Nightly batch completed by " & FSUPP1 & "<br><br>" & "FTEST7 Nightly batch completed by " & FTEST7 & "<br><br>" & _
+    "FTEST2  Nightly batch completed by " & FTEST2 & "<br><br>" & "CONFIG_DEV Nightly batch completed by " & CONFIG_DEV & "<br><br>" & _
+    "FDEV5  Nightly batch completed by " & FDEV5 & "<br><br>" & "FDEV6 Nightly batch completed by " & FDEV6 & "<br><br>" & _
+    "FTRAIN1  Nightly batch completed by " & FTRAIN1 & "<br><br>" & "FPVS1 Nightly batch completed by " & FPVS1 & "<br><br>" & _
+    "<b><u>Adhoc :</u></b><br><br><br>" & "Team,<br><br>" & "You can find batch status emails in the path<br>" & _
+    plink & "<br><br>" & "</font>" & Signature
+    NewMail.To = "SelSegScheduling@Cigna.com;Neil.Kalmes@Cigna.com;Barbara.Zopfi@Cigna.com;FacetsCoreBatch@Cigna.com;Facets_Batch_Business@Cigna.com"
+    NewMail.CC = "SIVAPRIYA.MANICKAM@Cigna.com;VijayBabu.Madhavan@Cigna.com;Sivakumar.Chandrasekaran@Cigna.com;VijayBabu.Madhavan@cognizant.com;Mindi.Ferris@Cigna.com;Bruce.Peak@Cigna.com"
+Call Save_Status_Email
+End Sub
+Sub Create_Day_Batch_Status_Email()
+    Dim objOLApp As Outlook.Application
+    Dim NewMail As Outlook.MailItem
+    Set objOLApp = New Outlook.Application
+    Dim olapp As Outlook.Application, olNs As Outlook.NameSpace
+    Dim olFolder As Outlook.MAPIFolder, olmail As Outlook.MailItem
+    Dim eFolder As Outlook.Folder '~~> additional declaration
+    Dim i As Long
+    Dim usrname  As String
+'    Dim x As Date ', ws As Worksheet '~~> declare WS variable instead
+
+    Set olapp = New Outlook.Application
+    Set olNs = olapp.GetNamespace("MAPI")
+    Set NewMail = objOLApp.CreateItem(olMailItem)
+    NewMail.Display
+    subj = "Day Batch Status " & Date
+    NewMail.Subject = subj
+    usr = Environ("username")
+    If (usr = "M76661") Then
+        usrname = "Kaviarasu.S"
+    ElseIf (usr = "M24066") Then
+        usrname = "K Suresh"
+    ElseIf (usr = "M53470") Then
+        usrname = "Johny Felix P"
+    ElseIf (usr = "M73448") Then
+        usrname = "Sandeep J"
+    End If
+    plink = "<u>\\its\GWHIS\grphome\Projects\Support\Facets_Batch_Support\Nightly_Batch_Status</u>"
+    Signature = "<font style='color: black; font-family:Calibri; font-size: 10pt;'>" & "Thanks<br>" & "Regards,<br>" & usrname & _
+    "<br>" & "Core Solutions - Sel Seg Scheduling.<br>" & "</font>"
+    Signature = Signature & "<font style='color: black; font-family:Calibri; font-size: 9pt;'>" & _
+    "Confidential, unpublished property of Cigna. Do not duplicate or distribute. Use and distribution limited solely to authorized personnel. © Copyright " & Year(Date) & " CIGNA." & "</font>"
+    NewMail.HTMLBody = "<font style='color: black; font-family:Calibri; font-size: 11pt;'>" & "Hi Team,<br><br>" & "Please find below the Day batch status today.<br><br>" & _
+    "<b><u>Production Issues:</u></b><br><br><br>" & "<b><u>Non production Issues:</u></b><br><br><br>" & _
+    "<b><u>Adhoc :</u></b><br><br><br>" & "Team,<br><br>" & "You can find batch status emails in the path<br>" & _
+    plink & "<br><br>" & "</font><br/>" & Signature
+    NewMail.To = "SelSegScheduling@Cigna.com;Neil.Kalmes@Cigna.com;Barbara.Zopfi@Cigna.com;FacetsCoreBatch@Cigna.com;Facets_Batch_Business@Cigna.com"
+    NewMail.CC = "SIVAPRIYA.MANICKAM@Cigna.com;VijayBabu.Madhavan@Cigna.com;Sivakumar.Chandrasekaran@Cigna.com;VijayBabu.Madhavan@cognizant.com;Mindi.Ferris@Cigna.com;Bruce.Peak@Cigna.com"
+Call Save_Status_Email
+End Sub
+Sub Save_Status_Email()
+Set objApp = Application
+Set fso = New Scripting.FileSystemObject
+    On Error Resume Next
+    Select Case TypeName(objApp.ActiveWindow)
+    Case "Explorer"
+        Set getcurrentitem = objApp.ActiveExplorer.Selection.Item(1)
+    Case "Inspector"
+        Set getcurrentitem = objApp.ActiveInspector.CurrentItem
+    End Select
+    Set objApp = Nothing
+    subject1 = getcurrentitem.Subject
+    subject1 = Replace(subject1, "-", "")
+    subject1 = Replace(subject1, "  ", " ")
+    subject1 = Replace(UCase(subject1), "RE: ", "")
+    sb = Split(subject1, " ")
+    If (Trim(sb(UBound(sb))) Like "*/*") Then
+        dateval = Split(Trim(sb(UBound(sb))), "/")
+    End If
+    filename1 = Join(sb, "-")
+    filename1 = Replace(filename1, "/", "-")
+    filename1 = Replace(filename1, ":", "")
+    filename1 = Replace(filename1, "'", "-")
+    collectdate = dateval(0) & "-" & Trim(sb(UBound(sb) - 1)) & "-" & dateval(1)
+    mon = Format((Trim(sb(UBound(sb)))), "mmmm")
+    year1 = dateval(2)
+    strFolderpath = "\\its\GWHIS\grphome\Projects\Support\Facets_Batch_Support\Nightly_Batch_Status\" & year1 & "\" & mon & "\"
+    Set SourceFolder = fso.GetFolder(strFolderpath)
+    If (SourceFolder <> Empty) Then
+        FilePath = strFolderpath & filename1 & ".msg"
+        i = MsgBox("Can we save this message as: " & FilePath, vbOKCancel)
+        If (i = 2) Then
+            MsgBox "message is not saved"
+        ElseIf (i = 1) Then
+        getcurrentitem.SaveAs FilePath, olMSG
+        End If
+    Else
+        MsgBox "The folder does not exist"
+    End If
+    'MsgBox FilePath
+    'getcurrentitem.SaveAs FilePath, olMSG
+
+    
+End Sub
+Sub dat()
+s = Format(Date, "MMM")
+MsgBox s
+End Sub
+
+
+Private Sub ReadOutlookMail()
+ 
+Set otlkApp = CreateObject("Outlook.Application")
+ 
+Set MAPISpace = otlkApp.GetNamespace("MAPI")
+ 
+Set otlkfolder = MAPISpace.GetDefaultFolder(olFolderInbox)
+x = Format(DateAdd("d", -1, Date))
+Count = 0
+For Each MailItem In otlkfolder.Items
+'MsgBox "Subject:" & MailItem.Subject
+If (MailItem.Subject = "FDEV6 Facets Nightly Batch has completed!") Then
+'MsgBox MailItem.Subject
+ End If
+ If (InStr(MailItem.ReceivedTime, x) > 0 Or InStr(MailItem.ReceivedTime, Date) > 0) Then
+ 'MsgBox MailItem.Subject
+ Else
+ MsgBox MailItem.Subject
+ End If
+ Count = Count + 1
+Next MailItem
+ 
+End Sub
+
+Sub CopyAllMessagesToExcel()
+ Dim objOL As Outlook.Application
+ Dim objItems As Outlook.Items
+ Dim objFolder As Outlook.MAPIFolder
+ Dim olItem As Outlook.MailItem
+ Dim xlApp As Object
+
+
+    Set objOL = Outlook.Application
+    Set objFolder = objOL.ActiveExplorer.inbox
+    Set objItems = objFolder.Items
+ 
+    For Each olItem In objItems
+ 
+      On Error Resume Next
+
+     With olItem
+     
+     MsgBox olItem.Subject
+End With
+Next
+End Sub
+Sub Body_Relabel()
+
+  Set objBodyDoc = Application.ActiveInspector.CurrentItem
+  objBodyDoc.HTMLBody = Replace(objBodyDoc.HTMLBody, "Work Item Creator:", "PM:")
+  objBodyDoc.HTMLBody = Replace(objBodyDoc.HTMLBody, "Work Item Delegate:", "IPM:")
+  objBodyDoc.HTMLBody = Replace(objBodyDoc.HTMLBody, "Work Request:", "iServ#:")
+  
+End Sub
+
+Sub UpdateCMDB()
+    Dim fso As Scripting.FileSystemObject
+    Dim SourceFolder As Scripting.Folder
+    Dim FileItem As Scripting.File
+    Dim wshell, oexe
+    CM = "0"
+    imticket = ""
+    cmticket = ""
+    project = ""
+    subproject = ""
+    State = ""
+    pkgversion = ""
+    instruction = ""
+    dba_task = "2"
+    
+    '''''
+    Set objApp = Application
+    On Error Resume Next
+    Select Case TypeName(objApp.ActiveWindow)
+    Case "Explorer"
+        Set getcurrentitem1 = objApp.ActiveExplorer.Selection.Item(1)
+    Case "Inspector"
+        Set getcurrentitem = objApp.ActiveInspector.CurrentItem
+    End Select
+    Set objApp = Nothing
+    If getcurrentitem1 = "" Then
+      'check for COORDINATION in the deployment subject and remove it
+        Subject = getcurrentitem
+        If (InStr(Subject, "COORDINATION")) Then
+           Subject = Replace(Subject, "-COORDINATION", "")
+        End If
+        'Split the subject with hyphen
+        tempary = Split(Subject, "-")
+        lenary = UBound(tempary)
+        If (lenary > 2) Then
+           tempary(1) = Trim(tempary(1))
+           tempary(2) = Trim(tempary(2))
+           tempary(3) = Trim(tempary(3))
+            'Integrated Release/Lower Environments Deployments
+            If (tempary(2) = "Production" Or tempary(2) = "System_Test" Or tempary(2) = "PVS" Or tempary(2) = "RM" Or _
+                tempary(2) = "Integration" Or tempary(2) Like "eEligibility_Pre_Prod*" Or tempary(2) = "PSDEV" Or _
+                tempary(2) = "PSTEST" Or tempary(2) = "TRAINING" Or tempary(2) = "PFIX" Or tempary(2) = "PROD_FIX" Or tempary(2) = "SYS" Or _
+                tempary(2) = "INT" Or tempary(2) = "REL" Or tempary(2) = "PROD") Then
+                ticket = tempary(0)
+                If (ticket Like "*<CM*") Then
+                    temp = Split(ticket, "<CM")
+                    cmtkt = Split(temp(1), ">")
+                    cmticket = cmtkt(0)
+                    CM = 1
+                    ''''''''''''''''''''
+                ElseIf (ticket Like "*<IM*") Then
+                    temp = Split(ticket, "<IM")
+                    IMTkt = Split(temp(1), ">")
+                    imticket = Trim(IMTkt(0))
+                End If
+                    State = Trim(tempary(2))
+                    project = Trim(tempary(3))
+                    'special case for XMS-MEET as it has "-" in the project name and Eligibility_Pre_Prod
+                    If (State Like "eEligibility_Pre_Prod*") Then
+                        State = "eEligibility_Pre_Prod"
+                    End If
+                    If (project = "XMS") Then
+                        project = "XMS-MEET"
+                        For i = 4 To (UBound(tempary) - 1)
+                            tempary(i) = tempary(i + 1)
+                        Next i
+                        lenary = UBound(tempary) - 1
+                    End If
+                    '''''''''''''''''''''''''''''''
+                    isOffCycle = False
+            'Off-Cycle Release
+            ElseIf (tempary(3) = "Production" Or tempary(3) = "System_Test" Or tempary(3) = "PVS" Or tempary(3) = "RM" Or _
+                   tempary(3) = "Integration" Or tempary(3) Like "eEligibility_Pre_Prod*" Or tempary(3) = "PSDEV" Or _
+                   tempary(3) = "PSTEST" Or tempary(3) = "TRAINING" Or tempary(3) = "PFIX" Or tempary(2) = "PROD_FIX" Or tempary(2) = "SYS" Or _
+                tempary(2) = "INT" Or tempary(2) = "REL" Or tempary(2) = "PROD") Then
+                ticket = tempary(0)
+                If (ticket Like "*<CM*") Then
+                    temp = Split(ticket, "<CM")
+                    cmtkt = Split(temp(1), ">")
+                    cmticket = cmtkt(0)
+                    CM = 1
+                    '''''''''''''''''''''
+                ElseIf (ticket Like "*<IM*") Then
+                    temp = Split(ticket, "<IM")
+                    IMTkt = Split(temp(1), ">")
+                    imticket = Trim(IMTkt(0))
+                End If
+                    State = Trim(tempary(3))
+                    project = Trim(tempary(4))
+                    'special case for XMS-MEET as it has "-" in the project name
+                    If (project = "XMS") Then
+                        project = "XMS-MEET"
+                        For i = 4 To (UBound(tempary) - 1)
+                            tempary(i) = tempary(i + 1)
+                        Next i
+                        lenary = UBound(tempary) - 1
+                    End If
+                    ''''''''''''''''''''''''''
+                    isOffCycle = True
+            End If
+
+             'To Identify the deployment has subproject or not for Off cycle release
+             If (isOffCycle) Then
+                If (IsNumeric(tempary(5))) Then
+                   issubproject = False
+                   subproject = ""
+                   arrlastvalue = Split(tempary(4), "_")
+                   project = ""
+                   For i = 0 To UBound(arrlastvalue) - 1
+                     If (project = "") Then
+                       project = arrlastvalue(i)
+                     Else
+                       project = project & "_" & arrlastvalue(i)
+                     End If
+                   Next
+                   pkgversion = arrlastvalue(UBound(arrlastvalue))
+                Else
+                   issubproject = True
+                   arrlastvalue = Split(tempary(5), "_")
+                   subproject = ""
+                   For i = 0 To UBound(arrlastvalue) - 1
+                     If (subproject = "") Then
+                       subproject = arrlastvalue(i)
+                     Else
+                       subproject = subproject & "_" & arrlastvalue(i)
+                     End If
+                   Next
+                   pkgversion = arrlastvalue(UBound(arrlastvalue))
+                End If
+             'To Identify the deployment has subproject or not for non-Off cycle release/lower environments
+             Else
+                If (IsNumeric(tempary(4))) Then
+                   issubproject = False
+                   subproject = ""
+                   arrlastvalue = Split(tempary(3), "_")
+                   project = ""
+                   For i = 0 To UBound(arrlastvalue) - 1
+                     If (project = "") Then
+                       project = arrlastvalue(i)
+                     Else
+                       project = project & "_" & arrlastvalue(i)
+                     End If
+                   Next
+                   pkgversion = arrlastvalue(UBound(arrlastvalue))
+                Else
+                   issubproject = True
+                   arrlastvalue = Split(tempary(4), "_")
+                   subproject = ""
+                  For i = 0 To UBound(arrlastvalue) - 1
+                     If (subproject = "") Then
+                       subproject = arrlastvalue(i)
+                     Else
+                       subproject = subproject & "_" & arrlastvalue(i)
+                     End If
+                   Next
+                   pkgversion = arrlastvalue(UBound(arrlastvalue))
+                End If
+             End If
+             
+             
+              'Package Group Version - Consolidated Off Cycle Release
+             If (isOffCycle) Then
+                If (lenary > 4) And Not (issubproject) Then
+                   For i = 5 To lenary
+                     pkgversion = pkgversion & "-" & Trim(tempary(i))
+                   Next
+                ElseIf (lenary > 5) And issubproject Then
+                   For i = 6 To lenary
+                     pkgversion = pkgversion & "-" & Trim(tempary(i))
+                   Next
+                End If
+             'Package Group Version - Consolidated non-Off cycle release/lower environments
+             Else
+                If (lenary > 3) And Not (issubproject) Then
+                   For i = 4 To lenary
+                     pkgversion = pkgversion & "-" & Trim(tempary(i))
+                   Next
+                ElseIf (lenary > 4) And issubproject Then
+                   For i = 5 To lenary
+                     pkgversion = pkgversion & "-" & Trim(tempary(i))
+                   Next
+                End If
+             End If
+             
+            'Read the body of the mail line by line
+            myar = Split(getcurrentitem.Body, vbCrLf)
+            'find the DBA task in mail
+            DBAsearchstr1 = "Prod Svc DBA-MIDRANG"
+            DBAsearchstr2 = "Prod Svc DB Eng Midrange"
+            DBAsearchstr3 = "OneSource Deployments"
+            DBAsearchstr4 = "Sel Seg Infrastructure"
+            mailbody = getcurrentitem.Body
+            If (InStr(mailbody, DBAsearchstr2)) Then
+                dba_task = "1"
+            ElseIf (InStr(mailbody, DBAsearchstr1)) Then
+                dba_task = "1"
+            ElseIf (InStr(mailbody, DBAsearchstr3)) Then
+                dba_task = "1"
+            ElseIf (InStr(mailbody, DBAsearchstr4)) Then
+                dba_task = "1"
+            End If
+
+            'find the type of Install instruction
+            instrchk1 = InStr(UCase(mailbody), "DEPLOYMENT DETAILS:")
+            conschk = InStr(UCase(mailbody), "CONSOLIDATED")
+            incrchk = InStr(UCase(mailbody), "INCREMENTAL")
+            fullchk1 = InStr(UCase(mailbody), "FULL/COMPLETE")
+            fullchk2 = InStr(UCase(mailbody), "FULL")
+            If (instrchk1) Then
+                    If ((conschk) And ((instrchk1 + 100) > conschk) And (conschk > instrchk1)) Then
+                        instruction = "Consolidated"
+                        x = InStr(mailbody, "Deployment Details:")
+                        y = InStr(UCase(mailbody), "CONSOLIDATED")
+                    ElseIf ((incrchk) And ((instrchk1 + 100) > incrchk) And (incrchk > instrchk1)) Then
+                        instruction = "Incremental"
+                    ElseIf ((fullchk1 Or fullchk2)) Then
+                        If ((((instrchk1 + 100) > fullchk1) And (fullchk1 > instrchk1)) Or (((instrchk1 + 100) > fullchk2) And (fullchk2 > instrchk1))) Then
+                            instruction = "FULL/Complete"
+                        Else
+                            instruction = "Incremental"
+                        End If
+                    Else
+                        instruction = "Incremental"
+                    End If
+                End If
+            For i = LBound(myar) To UBound(myar)
+                If (Trim(myar(i)) <> "") Then
+                    'to find cm if not in Subject
+                    If (State = "Production" Or State = "TRAINING") Then 'assume that CM ticket for training and production
+                        If (CM = 0) Then
+                            If (myar(i) Like "*CM Number =*") Then
+                                ticket = myar(i)
+                                temp = Split(ticket, "<CM")
+                                cmtkt = Split(temp(1), ">")
+                                cmticket = cmtkt(0)
+                            End If
+                        End If
+                    End If
+                    'Find IM ticket if CM ticket in subject
+                    If (CM = 1) Then
+                        If (myar(i) = "Sel Seg CM") Then
+                            tempIM = prefetch
+                            tempIM = Replace(tempIM, Chr$(45), "-")
+                            tempIM = Replace(tempIM, Chr$(196), "-")
+                            tempIM = Replace(tempIM, Chr$(34), "-")
+                            tempIM = Replace(tempIM, Chr$(39), "-")
+                            tempIMary = Split(Trim(tempIM), "-")
+                            IMTkt = Split(Trim(tempIMary(0)), "IM") 'assume the format will be always as "IM7981329 - T043573" for SEL SEG CM ticket
+                            imticket = Trim(IMTkt(1))
+                        End If
+                        prefetch = myar(i)
+                    End If
+                    'find the project and subproject from the staging path
+                    If (InStr(myar(i), "SCM Staging Area:") Or InStr(myar(i), "NAS Staging Area:")) Then
+                        k = 1
+                       stagepath = myar(i + k)
+                       While (Trim(stagepath) = "")
+                        k = k + 1
+                        stagepath = myar(i + k)
+                       Wend
+                       arrPath = Split(stagepath, "\")
+                       
+                       For arrCount = 0 To UBound(arrPath)
+                          If (State = "PSDEV" Or State = "PSTEST" Or State = "TRAINING" Or State = "PROD_FIX" Or State = "PFIX" Or State = "PROD") Then
+                              tmpState = "Production"
+                          Else
+                              tmpState = State
+                          End If
+                          
+                          'Fetch the Project and Subproject for non-OneSource staging path
+                          If Not (InStr(arrPath(0), ":")) Then
+                            'If (Trim(subproject) = "") Then
+                            If (issubproject = False) Then
+                                If (arrPath(arrCount) = tmpState) Then
+                                   project = arrPath(arrCount - 1)
+                                End If
+                            Else
+                               If (arrPath(arrCount) = tmpState) Then
+                                   subproject = arrPath(arrCount - 1)
+                                   project = arrPath(arrCount - 2)
+                               End If
+                            End If
+                          'OneSource staging path
+                          Else
+                            'If (Trim(subproject) = "") Then
+                            If (issubproject = False) Then
+                                project = arrPath(UBound(arrCount))
+                            Else
+                                subproject = arrPath(UBound(arrCount))
+                                project = arrPath(UBound(arrCount) - 1)
+                            End If
+                          End If
+                       Next
+                    End If
+                    
+                End If
+            Next i
+            
+            pkgvrsnary = Split(pkgversion, "*")
+            pkgversion = Trim(pkgvrsnary(0))
+            tempversion = Split(pkgversion, "_")
+            pkgversion = Trim(tempversion(UBound(tempversion)))
+            ''''''''''''''''''''''''''''''''''''''''''''
+            If (Len(imticket) >= 9) Then
+                MsgBox "Can't find IM ticket from this mail"
+                Exit Sub
+            ElseIf (imticket = "") Then
+                MsgBox "Unable to fetch the IM ticket from this mail."
+                Exit Sub
+            ElseIf (State = "") Then
+                MsgBox "Unable to fetch the State from this mail."
+                Exit Sub
+            ElseIf (project = "") Then
+                MsgBox "Unable to fetch the Project from this mail."
+                Exit Sub
+            ElseIf (pkgversion = "") Then
+                MsgBox "Unable to fetch the Package version from this mail."
+                Exit Sub
+            ElseIf (instruction = "") Then
+                MsgBox "Unable to fetch the Instruction type from this mail."
+                Exit Sub
+            ElseIf (State = "Production" Or State = "TRAINING" Or State = "PROD") Then
+                If (cmticket = "") Then
+                    MsgBox "Unable to fetch CM ticket for" & State & " from this mail."
+                    Exit Sub
+                End If
+            End If
+            'Call CMDB Update .Net code
+            'Offshore Path
+            strFolderpath = "\\GVOFSXXPW002\TrackingTools\Consolidate\HPSM_Interface\Production"
+            'Onsite Path
+            'strFolderpath = "C:\HPSM\Prod"
+            Set fso = New Scripting.FileSystemObject
+            Set SourceFolder = fso.GetFolder(strFolderpath)
+            For Each FileItem In SourceFolder.Files
+                strFile = FileItem.Name
+                If strFile = "CM_Tracking_DB_Update.exe" Then
+                    '''Onsite path
+                    'strProgramName = "C:\HPSM\Prod\CM_Tracking_DB_Update.exe"
+                    '''Offshore path
+                    strProgramName = "\\GVOFSXXPW002\TrackingTools\Consolidate\HPSM_Interface\Production\CM_Tracking_DB_Update.exe"
+                    Call Shell("""" & strProgramName & """ """ & Trim(imticket) & """ """ & Trim(cmticket) & """ """ & Trim(project) & """ """ & Trim(subproject) & """ """ & _
+                        Trim(pkgversion) & """ """ & Trim(State) & """ """ & Trim(instruction) & """ """ & Trim(dba_task) & """", vbNormalFocus)
+                     Exit For
+                End If
+            Next
+            
+            IMTkt = "IM" & Trim(imticket)
+             Dim xuser As String
+             xuser = Environ("username")
+            'Call HPSM Close IM
+            '''Onsite path
+              'strHPSMName = "C:\HPSM\Prod\HPSMCloseIM.exe"
+              '''Offshore path
+              strHPSMName = "\\GVOFSXXPW002\TrackingTools\Consolidate\HPSM_Interface\Production\HPSMCloseIM.exe"
+              strComments = "** Closed by " & xuser & " through the Outlook Macro via the HPSM Web Service. **"
+              Call Shell("""" & strHPSMName & """ """ & IMTkt & """ """ & strComments & """", vbNormalFocus)
+            'Task Completed Message
+            Call Reply_Tasking_Completed
+         End If
+    End If
+End Sub
+
+Sub Reply_Tasking_Completed()
+
+' Macro to Close out all tasking within the deployment and make ready the Tasking Completed Notify.
+    Dim mail As MailItem
+    Dim forward As MailItem
+    Dim recipient As recipient
+    Set mail = ActiveInspector.CurrentItem
+    Set forward = mail.forward
+    Dim intSize As Integer
+    Dim strDateStamp As String
+    Dim strNewFormat As String
+    Dim lLength As Long
+    Dim lHead As Long
+    strDateStamp = Now()
+
+' The below For/Next loop will place all recipients within the orig msg in the TO line of the new forwarded msg.
+    '   For Each recipient In mail.Recipients
+    '       Set theRecipient = forward.Recipients.Add(recipient.Name)
+    '       theRecipient.Type = olTo  '
+    '   Next recipient
+ 
+'This line will just take the people in the CC line of the original message and place them in the To line of the
+'new email notify. There should be no need to include the people within the original To line for their tasking has
+'completed and we are just notifying the App Team of the completion.
+     forward.To = mail.CC
+    
+' This line just resolves the addresses that were copied over from the original msg.
+    forward.Recipients.ResolveAll
+    
+' Reformat the subject line to exclude the FW: notation within a forwarded msg.
+    forward.Subject = mail.Subject
+    
+' Write and format body to new Tasking Completed Notify
+    mail.HTMLBody = RTrim(LTrim(mail.HTMLBody))
+    intSize = Len(mail.HTMLBody)
+    mail.HTMLBody = Left(mail.HTMLBody, (intSize - 19))
+    
+    lLength = Len(mail.HTMLBody)
+    lHead = InStr(mail.HTMLBody, "<head>")
+    strNewFormat = Mid$(mail.HTMLBody, (lHead + 6), lLength)
+    
+    forward.HTMLBody = "<html xmlns:v=""urn:schemas-microsoft-com:vml"" xmlns:o=""urn:schemas-microsoft-com:" & _
+                        "office:office"" xmlns:w=""urn:schemas-microsoft-com:office:word"" xmlns:st1=""urn:" & _
+                        "schemas-microsoft-com:office:smarttags"" xmlns=""http://www.w3.org/TR/REC-html40"">" & vbCrLf & _
+                        "" & vbCrLf & _
+                        "<head>" & vbCrLf & _
+                        "<p class=MsoNormal><font size=2 color=blue face=Arial><span style='font-size:" & vbCrLf & _
+                        "10.0pt;font-family:Arial;color:blue'> Tasking Completed - " & strDateStamp & " - All Support Team Requests " & _
+                        "have been completed for this installation. The appropriate documentation has been updated " & _
+                        "and the requests have been closed. If any issues are noted during validation please reply " & _
+                        "to All on this email with details of the issue(s).<BR>" & vbCrLf & _
+                        "<BR>**************************************************" & _
+                        "*******************</o:p></span></font></p>" & vbCrLf & _
+                        "" & strNewFormat
+                      
+ '  **** Write whatever is in the variable (in this case HTML) to a file named Datafile.txt ****
+ '   ActiveInspector.CurrentItem.SaveAs "C:\temp\" + "Datafile" + ".txt", 0
+ '   Open "C:\temp\Datafile.txt" For Output As #1
+ '   Write #1, forward.HTMLBody
+ '   Close #1
+ 
+    forward.HTMLBody = Replace(forward.HTMLBody, ">opened<", ">Completed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">Opened<", ">Completed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">open<", ">Completed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">Open<", ">Completed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">OPEN<", ">Completed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">Assigned<", ">Completed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">assigned<", ">Completed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">Monitoring<", ">Closed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">monitoring<", ">Closed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">Pending<", ">Completed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">pending<", ">Completed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">Requested via this email<", ">Completed<")
+    forward.HTMLBody = Replace(forward.HTMLBody, ">Requested via this email <", ">Completed<")
+    
+' Display the newly formatted message so the user can alter before sending.
+    forward.Display
+    
+' close orig email
+    mail.Close olDiscard
+    
+End Sub
+Sub Nightly_batch()
+Set objApp = Application
+Set fso = New Scripting.FileSystemObject
+    On Error Resume Next
+    Select Case TypeName(objApp.ActiveWindow)
+    Case "Explorer"
+        Set getcurrentitem = objApp.ActiveExplorer.Selection.Item(1)
+    Case "Inspector"
+        Set getcurrentitem = objApp.ActiveInspector.CurrentItem
+    End Select
+    Set objApp = Nothing
+    subject1 = getcurrentitem.Subject
+    subject1 = Replace(subject1, "-", "")
+    subject1 = Replace(subject1, "  ", " ")
+    subject1 = Replace(UCase(subject1), "RE: ", "")
+    sb = Split(subject1, " ")
+    If (Trim(sb(UBound(sb))) Like "*/*") Then
+        dateval = Split(Trim(sb(UBound(sb))), "/")
+    End If
+    filename1 = Join(sb, "-")
+    filename1 = Replace(filename1, "/", "-")
+    filename1 = Replace(filename1, ":", "")
+    filename1 = Replace(filename1, "'", "-")
+    collectdate = dateval(0) & "-" & Trim(sb(UBound(sb) - 1)) & "-" & dateval(1)
+    mon = Format(collectdate, "[$-409]mmmm")
+    year1 = Format(collectdate, "yyyy")
+    strFolderpath = "\\its\GWHIS\grphome\Projects\Support\Facets_Batch_Support\Nightly_Batch_Status\" & year1 & "\" & mon & "\"
+    Set SourceFolder = fso.GetFolder(strFolderpath)
+    If (SourceFolder <> Empty) Then
+        FilePath = strFolderpath & filename1 & ".msg"
+        i = MsgBox("Can we save this message as: " & FilePath, vbOKCancel)
+        If (i = 2) Then
+            MsgBox "message is not saved"
+        ElseIf (i = 1) Then
+        getcurrentitem.SaveAs FilePath, olMSG
+        End If
+    Else
+        MsgBox "The folder does not exist"
+    End If
+    'MsgBox FilePath
+    'getcurrentitem.SaveAs FilePath, olMSG
+
+    
+End Sub
+Sub saveattachment()
+    Set objApp = Application
+    On Error Resume Next
+    Select Case TypeName(objApp.ActiveWindow)
+    Case "Explorer"
+        Set getcurrentitem = objApp.ActiveExplorer.Selection.Item(1)
+    Case "Inspector"
+        Set getcurrentitem = objApp.ActiveInspector.CurrentItem
+    End Select
+    Set objApp = Nothing
+       ' Get the Attachments collection of the item.
+    Set objAttachments = getcurrentitem.Attachments
+    lngCount = objAttachments.Count
+    xuser = Environ("username")
+    strFolderpath = "\\wdcnap005\gwhis_Projects\Support\CTS\Kavi\Attachment\"
+    If lngCount > 0 Then
+        For i = lngCount To 1 Step -1
+            ' Get the file name.
+            strFile = objAttachments.Item(i).FileName
+            strFile = strFolderpath & strFile
+            ' Save the attachment as a file.
+            objAttachments.Item(i).SaveAsFile strFile
+        Next i
+    End If
+End Sub
+Sub Grid_APP_DBA()
+
+    'As of Wednesday, June 29, 2016 we will start to utilize the Sel Seg Infrastructure resource (Scott Jenison and Linda Bennett)
+    'for ALL System_Test (FSUPP1) and Integration (FTEST7) DBA deployments.
+
+  Set objDoc = Application.ActiveInspector.WordEditor
+  Set objSel = objDoc.Windows(1).Selection
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Sel Seg Infrastructure"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Open"
+  objSel.EndKey Unit:=wdLine
+  Set objBodyDoc = Application.ActiveInspector.CurrentItem
+  objBodyDoc.HTMLBody = Replace(objBodyDoc.HTMLBody, "DBA:", "DBA: Scott Jenison / Linda Bennett / ")
+  objBodyDoc.To = "Scott.Jenison@Cigna.com;Linda.Bennett@Cigna.com"
+  
+End Sub
+
+Sub SD_Prod_Grid_APP_DBA()
+
+  Set objDoc = Application.ActiveInspector.WordEditor
+  Set objSel = objDoc.Windows(1).Selection
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Sel Seg Infrastructure"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Open"
+  objSel.MoveLeft Unit:=wdCell
+  objSel.MoveLeft Unit:=wdCell
+  Call create_child_ticket
+  objSel.EndKey Unit:=wdLine
+  Set objBodyDoc = Application.ActiveInspector.CurrentItem
+  objBodyDoc.HTMLBody = Replace(objBodyDoc.HTMLBody, "DBA:", "DBA: Scott Jenison / Linda Bennett / ")
+  objBodyDoc.To = objBodyDoc.To + ";Scott.Jenison@Cigna.com;Linda.Bennett@Cigna.com"
+  
+End Sub
+
+Sub SD_Prod_Grid_OneSource_DBA()
+
+  Set objDoc = Application.ActiveInspector.WordEditor
+  Set objSel = objDoc.Windows(1).Selection
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="OneSource Deployments"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Open"
+  objSel.MoveLeft Unit:=wdCell
+  objSel.MoveLeft Unit:=wdCell
+  Call create_child_ticket
+  objSel.EndKey Unit:=wdLine
+  Set objBodyDoc = Application.ActiveInspector.CurrentItem
+  objBodyDoc.To = objBodyDoc.To + ";Ulysses.Castillo@Cigna.com"
+  
+End Sub
+
+Sub SD_Prod_Grid_LODO_DBA()
+
+  Set objDoc = Application.ActiveInspector.WordEditor
+  Set objSel = objDoc.Windows(1).Selection
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Prod Svc DBA-MIDRANG"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Open"
+  objSel.MoveLeft Unit:=wdCell
+  objSel.MoveLeft Unit:=wdCell
+  Call create_child_ticket
+  objSel.EndKey Unit:=wdLine
+  Set objBodyDoc = Application.ActiveInspector.CurrentItem
+  objBodyDoc.To = objBodyDoc.To + ";DBAFACETS@Cigna.com"
+  
+End Sub
+
+Sub SD_Prod_Grid_DBA_ProjectWork()
+
+  Set objDoc = Application.ActiveInspector.WordEditor
+  Set objSel = objDoc.Windows(1).Selection
+  objSel.TypeText Text:="Project Work - N/A"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Prod Svc DBA-MIDRANG"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Requested via this email"
+  objSel.MoveLeft Unit:=wdCell
+  objSel.MoveLeft Unit:=wdCell
+  Call create_child_ticket
+  'no ticket is to be created for this team for the lower environments although a task is required for Production efforts.
+  objSel.EndKey Unit:=wdLine
+  'email should be assigned to the DBA called out within the email notify (which is derived from the Harvest from).
+
+End Sub
+Sub SD_Prod_Grid_DBA_CM()
+
+  Set objDoc = Application.ActiveInspector.WordEditor
+  Set objSel = objDoc.Windows(1).Selection
+  objSel.TypeText Text:="T"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Proj Svc DB Eng Midrange"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Open"
+  objSel.MoveLeft Unit:=wdCell
+  objSel.MoveLeft Unit:=wdCell
+  Call create_child_ticket
+  'no ticket is to be created for this team for the lower environments although a task is required for Production efforts.
+  objSel.EndKey Unit:=wdLine
+  'email should be assigned to the DBA called out within the email notify (which is derived from the Harvest from).
+
+End Sub
+Sub SD_Prod_Grid_INFA_CM()
+
+  Set objDoc = Application.ActiveInspector.WordEditor
+  Set objSel = objDoc.Windows(1).Selection
+  objSel.TypeText Text:="T"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="GW HC INF Ops"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Open"
+  objSel.MoveLeft Unit:=wdCell
+  objSel.MoveLeft Unit:=wdCell
+  Call create_child_ticket
+  objSel.EndKey Unit:=wdLine
+  Set objBodyDoc = Application.ActiveInspector.CurrentItem
+  objBodyDoc.To = objBodyDoc.To + ";inf_admin@Cigna.com"
+  
+End Sub
+
+Sub SD_Prod_Grid_SSBT()
+
+  Set objDoc = Application.ActiveInspector.WordEditor
+  Set objSel = objDoc.Windows(1).Selection
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Sel Seg Build Team"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Open"
+  objSel.MoveLeft Unit:=wdCell
+  objSel.MoveLeft Unit:=wdCell
+  Call create_child_ticket
+  objSel.EndKey Unit:=wdLine
+  Set objBodyDoc = Application.ActiveInspector.CurrentItem
+  objBodyDoc.To = objBodyDoc.To + ";SelSegBuildTeam@Cigna.com"
+  
+End Sub
+
+Sub SD_Prod_Grid_SSCDM()
+
+  Set objDoc = Application.ActiveInspector.WordEditor
+  Set objSel = objDoc.Windows(1).Selection
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Sel Seg CDM"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Open"
+  objSel.MoveLeft Unit:=wdCell
+  objSel.MoveLeft Unit:=wdCell
+  Call create_child_ticket
+  objSel.EndKey Unit:=wdLine
+  Set objBodyDoc = Application.ActiveInspector.CurrentItem
+  objBodyDoc.To = objBodyDoc.To + ";SelSegCDMTeam@Cigna.com"
+  
+End Sub
+
+Sub SD_Prod_Grid_OVS()
+
+  Set objDoc = Application.ActiveInspector.WordEditor
+  Set objSel = objDoc.Windows(1).Selection
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Online View Services"
+  objSel.MoveRight Unit:=wdCell
+  objSel.TypeText Text:="Open"
+  objSel.MoveLeft Unit:=wdCell
+  objSel.MoveLeft Unit:=wdCell
+  Call create_child_ticket
+  objSel.EndKey Unit:=wdLine
+  Set objBodyDoc = Application.ActiveInspector.CurrentItem
+  objBodyDoc.To = objBodyDoc.To + ";OnlineViewServices@Cigna.com"
+  
+End Sub
+
+Sub create_child_ticket()
+'Variable declaration
+    Dim imticket As Variant
+    Dim cmticket As Variant
+    Dim project As Variant
+    Dim subproject As Variant
+    Dim pkggrp As Variant
+    Dim State As String
+    Dim clarity_val As Variant
+    Dim dba_val As Variant
+    Dim dbinst_val As Variant
+    Dim stage_val As Variant
+    Dim suppgrp As String
+    Dim wsh As Object
+    Set wsh = VBA.CreateObject("WScript.Shell")
+    Dim waitOnReturn As Boolean: waitOnReturn = True
+    Dim windowStyle As Integer: windowStyle = 1
+    Set fso = New Scripting.FileSystemObject
+    Dim SourceFolder As Scripting.Folder
+    Dim FileItem As Scripting.File
+    
+        CM = "0"
+        imticket = ""
+        cmticket = ""
+        project = ""
+        subproject = ""
+        State = ""
+        pkgversion = ""
+        instruction = ""
+    
+    'Find the row number in the Grid where the Cursor placed
+    Set objDoc = Application.ActiveInspector.WordEditor
+    Set objSel = objDoc.Windows(1).Selection
+    For RowCnt = 0 To 4
+        objSel.MoveUp Unit:=wdLine, Count:=1
+        objSel.MoveRight Unit:=wdCell
+        supgrpchk = objSel.Text
+        objSel.MoveLeft Unit:=wdCell
+        reqIDchk = objSel.Text
+        If (UCase(Trim(supgrpchk)) = "SUPPORT GROUP" And UCase(Trim(reqIDchk)) = "REQUEST ID") Then
+            RowCnt = RowCnt + 1
+            Exit For
+        End If
+    Next RowCnt
+    rtnpos = RowCnt
+    
+    If (RowCnt = 1) Then
+        warningmsg = MsgBox("Please ensure your Deployment Details and Staging Locations are correctly identified before you create any of your child tickets. OK to proceed OR CANCEL to exit and edit.", vbOKCancel)
+        If (warningmsg = 2) Then
+            Exit Sub
+        End If
+    End If
+    objSel.MoveDown Unit:=wdLine, Count:=RowCnt
+    
+    Set objApp = Application
+    On Error Resume Next
+    Select Case TypeName(objApp.ActiveWindow)
+        Case "Explorer"
+            Set getcurrentitem1 = objApp.ActiveExplorer.Selection.Item(1)
+        Case "Inspector"
+            Set getcurrentitem = objApp.ActiveInspector.CurrentItem
+    End Select
+    Set objApp = Nothing
+    If getcurrentitem1 = "" Then
+        'check for COORDINATION in the deployment subject and remove it
+        Subject = getcurrentitem
+        If (InStr(Subject, "COORDINATION")) Then
+            Subject = Replace(Subject, "-COORDINATION", "")
+        End If
+        'Split the subject with hyphen
+        tempary = Split(Subject, "-")
+        lenary = UBound(tempary)
+        If (lenary > 2) Then
+            tempary(1) = Trim(tempary(1))
+            tempary(2) = Trim(tempary(2))
+            tempary(3) = Trim(tempary(3))
+            'Integrated Release/Lower Environments Deployments
+            If (tempary(2) = "Production" Or tempary(2) = "System_Test" Or tempary(2) = "PVS" Or tempary(2) = "RM" Or _
+                tempary(2) = "Integration" Or tempary(2) Like "eEligibility_Pre_Prod*" Or tempary(2) = "PSDEV" Or _
+                tempary(2) = "PSTEST" Or tempary(2) = "TRAINING" Or tempary(2) = "PFIX" Or tempary(2) = "PROD_FIX" Or tempary(2) = "PROD" Or _
+                tempary(2) = "SYS" Or tempary(2) = "PVS" Or tempary(2) = "REL" Or tempary(2) = "INT") Then
+                ticket = tempary(0)
+                If (ticket Like "*<CM*") Then
+                    temp = Split(ticket, "<CM")
+                    cmtkt = Split(temp(1), ">")
+                    cmticket = cmtkt(0)
+                    CM = 1
+                    ''''''''''''''''''''
+                ElseIf (ticket Like "*<IM*") Then
+                    temp = Split(ticket, "<IM")
+                    IMTkt = Split(temp(1), ">")
+                    imticket = Trim(IMTkt(0))
+                End If
+                State = Trim(tempary(2))
+                project = Trim(tempary(3))
+                'special case for XMS-MEET as it has "-" in the project name and Eligibility_Pre_Prod
+                If (State Like "eEligibility_Pre_Prod*") Then
+                    State = "eEligibility_Pre_Prod (FDEV4)"
+                End If
+                If (project = "XMS") Then
+                    project = "XMS-MEET"
+                    For i = 4 To (UBound(tempary) - 1)
+                        tempary(i) = tempary(i + 1)
+                    Next i
+                    lenary = UBound(tempary) - 1
+                End If
+                '''''''''''''''''''''''''''''''
+                isOffCycle = False
+                'Off-Cycle Release
+            ElseIf (tempary(3) = "Production" Or tempary(3) = "System_Test" Or tempary(3) = "PVS" Or tempary(3) = "RM" Or _
+                tempary(3) = "Integration" Or tempary(3) Like "eEligibility_Pre_Prod*" Or tempary(3) = "PSDEV" Or _
+                tempary(3) = "PSTEST" Or tempary(3) = "TRAINING" Or tempary(3) = "PFIX" Or tempary(2) = "PROD_FIX" Or tempary(2) = "PROD" Or _
+                tempary(2) = "SYS" Or tempary(2) = "PVS" Or tempary(2) = "REL" Or tempary(2) = "INT") Then
+                ticket = tempary(0)
+                If (ticket Like "*<CM*") Then
+                    temp = Split(ticket, "<CM")
+                    cmtkt = Split(temp(1), ">")
+                    cmticket = cmtkt(0)
+                    CM = 1
+                    '''''''''''''''''''''
+                ElseIf (ticket Like "*<IM*") Then
+                    temp = Split(ticket, "<IM")
+                    IMTkt = Split(temp(1), ">")
+                    imticket = Trim(IMTkt(0))
+                End If
+                State = Trim(tempary(3))
+                project = Trim(tempary(4))
+                'special case for XMS-MEET as it has "-" in the project name
+                If (project = "XMS") Then
+                    project = "XMS-MEET"
+                    For i = 4 To (UBound(tempary) - 1)
+                        tempary(i) = tempary(i + 1)
+                    Next i
+                    lenary = UBound(tempary) - 1
+                End If
+                ''''''''''''''''''''''''''
+                isOffCycle = True
+            End If
+    
+            'To Identify the deployment has subproject or not for Off cycle release
+            If (isOffCycle) Then
+                If (IsNumeric(tempary(5))) Then
+                    issubproject = False
+                    subproject = ""
+                    arrlastvalue = Split(tempary(4), "_")
+                    project = ""
+                    For i = 0 To UBound(arrlastvalue) - 1
+                        If (project = "") Then
+                            project = arrlastvalue(i)
+                        Else
+                            project = project & "_" & arrlastvalue(i)
+                        End If
+                    Next
+                    pkgversion = arrlastvalue(UBound(arrlastvalue))
+                    pkggrp = project & "_" & pkgversion
+                Else
+                    issubproject = True
+                    arrlastvalue = Split(tempary(5), "_")
+                    subproject = ""
+                    For i = 0 To UBound(arrlastvalue) - 1
+                        If (subproject = "") Then
+                            subproject = arrlastvalue(i)
+                        Else
+                            subproject = subproject & "_" & arrlastvalue(i)
+                        End If
+                    Next
+                    pkgversion = arrlastvalue(UBound(arrlastvalue))
+                    pkggrp = project & "-" & subproject & "_" & pkgversion
+                End If
+                'To Identify the deployment has subproject or not for non-Off cycle release/lower environments
+            Else
+                If (IsNumeric(tempary(4))) Then
+                    issubproject = False
+                    subproject = ""
+                    arrlastvalue = Split(tempary(3), "_")
+                    project = ""
+                    For i = 0 To UBound(arrlastvalue) - 1
+                        If (project = "") Then
+                            project = arrlastvalue(i)
+                        Else
+                            project = project & "_" & arrlastvalue(i)
+                        End If
+                    Next
+                    pkgversion = arrlastvalue(UBound(arrlastvalue))
+                    pkggrp = project & "_" & pkgversion
+                Else
+                    issubproject = True
+                    arrlastvalue = Split(tempary(4), "_")
+                    subproject = ""
+                    For i = 0 To UBound(arrlastvalue) - 1
+                        If (subproject = "") Then
+                            subproject = arrlastvalue(i)
+                        Else
+                            subproject = subproject & "_" & arrlastvalue(i)
+                        End If
+                    Next
+                    pkgversion = arrlastvalue(UBound(arrlastvalue))
+                    pkggrp = project & "-" & subproject & "_" & pkgversion
+                End If
+            End If
+                
+            'Package Group Version - Consolidated Off Cycle Release
+            If (isOffCycle) Then
+                If (lenary > 4) And Not (issubproject) Then
+                    For i = 5 To lenary
+                        pkgversion = pkgversion & "-" & Trim(tempary(i))
+                        pkggrp = project & "_" & pkgversion
+                    Next
+                ElseIf (lenary > 5) And issubproject Then
+                    For i = 6 To lenary
+                        pkgversion = pkgversion & "-" & Trim(tempary(i))
+                        pkggrp = project & "-" & subproject & "_" & pkgversion
+                    Next
+                End If
+            'Package Group Version - Consolidated non-Off cycle release/lower environments
+            Else
+                If (lenary > 3) And Not (issubproject) Then
+                    For i = 4 To lenary
+                        pkgversion = pkgversion & "-" & Trim(tempary(i))
+                        pkggrp = project & "_" & pkgversion
+                    Next
+                ElseIf (lenary > 4) And issubproject Then
+                    For i = 5 To lenary
+                        pkgversion = pkgversion & "-" & Trim(tempary(i))
+                        pkggrp = project & "-" & subproject & "_" & pkgversion
+                    Next
+                End If
+            End If
+                
+            'Read the body of the mail line by line to get the required variables (Clarity code, Work Item, Work request, Staging Path, Install Instruction path)
+            myar = Split(getcurrentitem.Body, vbCrLf)
+            mailbody = getcurrentitem.Body
+            sizeofmail = Len(mailbody)
+            Set objDoc = Application.ActiveInspector.WordEditor
+            Set objSel = objDoc.Windows(1).Selection
+            objSel.MoveRight Unit:=wdCell
+            objSel.TypeText
+            suppgrp = objSel.Text
+            objSel.MoveRight Unit:=wdCell
+            TktStatus = objSel.Text
+            objSel.MoveLeft Unit:=wdCell
+            objSel.MoveLeft Unit:=wdCell
+            TicketReq = objSel.Text
+            objSel.MoveRight Unit:=wdCell
+            objSel.EndKey Unit:=wdLine
+            WIchk = InStr(UCase(mailbody), "WORK ITEM:")
+            instpthchk = InStr(UCase(mailbody), "INSTALL_INSTRUCTIONS")
+            stgpathchk = InStr(UCase(mailbody), "SCM STAGING AREA:")
+            claritychk = InStr(UCase(mailbody), "CLARITY CODE/TASK:") ''''new
+            instlchk = InStr(UCase(mailbody), "INSTALLATION INSTRUCTIONS:") ''''new
+            Description = Mid(mailbody, (WIchk), (stgpathchk - WIchk)) ''''new
+            extract = Mid(mailbody, (WIchk), (sizeofmail - WIchk))
+            Lines = Split(extract, Chr(10))
+            stgpathflag = 0
+            instrpathflag = 0
+            OBIEEUnixflag = 0
+            OBIEEUnixpath = ""
+            For Each Line In Lines
+                Line = Replace(Line, Chr(160), "")
+                Line = Replace(Line, Chr(13), "")
+                If (InStr(Line, "Clarity Code/Task:")) Then
+                    clarity_val = Trim(Replace(Line, "Clarity Code/Task:", ""))
+                ElseIf (InStr(Line, "Work Item:")) Then
+                    WI_val = Trim(Replace(Line, "Work Item:", ""))
+                ElseIf (InStr(Line, "Work Item Creator:")) Then
+                    WIcrtr_val = Trim(Replace(Line, "Work Item Creator:", ""))
+                ElseIf (InStr(Line, "Work Item Delegate:")) Then
+                    WIdlgt_val = Trim(Replace(Line, "Work Item Delegate:", ""))
+                ElseIf (InStr(Line, "Work Request:")) Then
+                    WR_val = Trim(Replace(Line, "Work Request:", ""))
+                'Production PM, IPM, iServ
+                ElseIf (InStr(Line, "IPM:")) Then
+                    WIdlgt_val = Trim(Replace(Line, "IPM:", ""))
+                ElseIf (InStr(Line, "PM:")) Then
+                    WIcrtr_val = Trim(Replace(Line, "PM:", ""))
+                ElseIf (InStr(Line, "iServ#:")) Then
+                    WR_val = Trim(Replace(Line, "iServ#:", ""))
+                ElseIf (InStr(Line, "Rally:")) Then
+                    Rally_val = Trim(Replace(Line, "Rally:", ""))
+                ElseIf (InStr(Line, "DBA:")) Then
+                    dba_val = Trim(Replace(Line, "DBA:", ""))
+                ElseIf (InStr(Line, "Database Instance:")) Then
+                    dbinst_val = Trim(Replace(Line, "Database Instance:", ""))
+                ElseIf (InStr(Line, "Informatica Repository:")) Then
+                    infrep_val = Trim(Replace(Line, "Informatica Repository:", ""))
+                ElseIf (InStr(Line, "Deployment Details:")) Then
+                    deploy_val = Trim(Replace(Line, "Deployment Details:", ""))
+                ElseIf (InStr(Line, "SCM Staging Area:")) Then
+                    stgpathflag = 1
+                ElseIf ((stgpathflag = 1) And (Trim(Line) <> "")) Then
+                    stage_val = Trim(Line)
+                    stage_val1 = stage_val
+                    stgpathflag = 0
+                ElseIf (InStr(Line, "Installation Instructions:")) Then
+                    instrpathflag = 1
+                ElseIf ((instrpathflag = 1) And (Trim(Line) <> "")) Then
+                    instrpath = Trim(Line)
+                    instrpathflag = 0
+                ElseIf (InStr(Line, "UNIX Staging Area:")) Then
+                    OBIEEUnixflag = 1
+                ElseIf ((OBIEEUnixflag = 1) And (Trim(Line) <> "")) Then
+                    OBIEEUnixpath = Line
+                    OBIEEUnixflag = 0
+                End If
+            Next
+                
+            'to find the Staging path and Install Instructions path
+            If (InStr(stage_val, "HYPERLINK")) Then
+                stage_ary = Split(stage_val, Chr(34))
+                stage_val = stage_ary(2)
+                stage_val1 = stage_val
+            End If
+            'check the staging path is valid
+            If (InStr(stage_val, "\")) Then 'windows staging path
+                stage_val2 = stage_val1 & "\"
+                Set StagingFolder = fso.GetFolder(stage_val2)
+                If (StagingFolder = Empty) Then
+                    MsgBox "Please note it appears the staging location is incorrect or the deployment has not been staged yet. Please address before proceeding."
+                    Exit Sub
+                End If
+            'Else 'unix staging path
+            '    MsgBox "Please make sure that this package is staged(Unix path)"
+            End If
+            If (InStr(instrpath, "HYPERLINK")) Then
+                stage_ary = Split(instrpath, Chr(34))
+                instrpath = stage_ary(2)
+            End If
+            If (instrpath <> "") Then
+                stage_val = stage_val & Chr(10) & Chr(10) & "Installation Instructions:" & Chr(10) & instrpath
+                If (OBIEEUnixpath <> "") Then
+                    stage_val = stage_val & Chr(10) & Chr(10) & "UNIX Staging Area:" & Chr(10) & OBIEEUnixpath
+                End If
+            End If
+            For i = LBound(myar) To UBound(myar)
+                If (Trim(myar(i)) <> "") Then
+                    'to find cm if not in Subject
+                    If (State = "Production" Or State = "TRAINING" Or State = "PROD") Then 'assume that CM ticket for training and production
+                        If (CM = 0) Then
+                            If (myar(i) Like "*CM Number =*") Then
+                                ticket = myar(i)
+                                temp = Split(ticket, "<CM")
+                                cmtkt = Split(temp(1), ">")
+                                cmticket = cmtkt(0)
+                            End If
+                        End If
+                    End If
+                    'Find IM ticket if CM ticket in subject
+                    If (CM = 1) Then
+                        If (myar(i) = "Sel Seg CM") Then
+                            tempIM = prefetch
+                            tempIM = Replace(tempIM, Chr$(45), "-")
+                            tempIM = Replace(tempIM, Chr$(196), "-")
+                            tempIM = Replace(tempIM, Chr$(34), "-")
+                            tempIM = Replace(tempIM, Chr$(39), "-")
+                            tempIMary = Split(Trim(tempIM), "-")
+                            IMTkt = Split(Trim(tempIMary(0)), "IM") 'assume the format will be always as "IM7981329 - T043573" for SEL SEG CM ticket
+                            imticket = Trim(IMTkt(1))
+                        End If
+                        prefetch = myar(i)
+                    End If
+                    'find the project and subproject from the staging path
+                    If (InStr(myar(i), "SCM Staging Area:") Or InStr(myar(i), "NAS Staging Area:")) Then
+                        k = 1
+                        stagepath = myar(i + k)
+                        While (Trim(stagepath) = "")
+                            k = k + 1
+                            stagepath = myar(i + k)
+                        Wend
+                        arrPath = Split(stagepath, "\")
+                            
+                        For arrCount = 0 To UBound(arrPath)
+                            If (State = "PSDEV" Or State = "PSTEST" Or State = "TRAINING" Or State = "PFIX" Or State = "PROD_FIX") Then
+                                tmpState = "Production"
+                            Else
+                                tmpState = State
+                            End If
+                                
+                            'Fetch the Project and Subproject for non-OneSource staging path
+                            If Not (InStr(arrPath(0), ":")) Then
+                            'If (Trim(subproject) = "") Then
+                                If (issubproject = False) Then
+                                    If (arrPath(arrCount) = tmpState) Then
+                                        project = arrPath(arrCount - 1)
+                                    End If
+                                Else
+                                    If (arrPath(arrCount) = tmpState) Then
+                                        subproject = arrPath(arrCount - 1)
+                                        project = arrPath(arrCount - 2)
+                                    End If
+                                End If
+                                'OneSource staging path
+                            Else
+                                'If (Trim(subproject) = "") Then
+                                If (issubproject = False) Then
+                                    project = arrPath(UBound(arrCount))
+                                Else
+                                    subproject = arrPath(UBound(arrCount))
+                                    project = arrPath(UBound(arrCount) - 1)
+                                End If
+                            End If
+                        Next
+                    End If
+                End If
+            Next i
+                
+            pkgvrsnary = Split(pkgversion, "*")
+            pkgversion = Trim(pkgvrsnary(0))
+            tempversion = Split(pkgversion, "_")
+            pkgversion = Trim(tempversion(UBound(tempversion)))
+        End If
+    End If
+    'Fetching username
+    UserId = Environ("USERNAME")
+    xuser = UCase(UserId)
+    xuser = Replace(xuser, "M", "0008")
+    xuser = Replace(xuser, "m", "0008")
+    xuser = Replace(xuser, "C", "0003")
+    xuser = Replace(xuser, "c", "0003")
+    xuser = Replace(xuser, "N", "0009")
+    xuser = Replace(xuser, "n", "0009")
+    xuser = Replace(xuser, "EXDOWN", "000107366")
+    xuser = Replace(xuser, "exdown", "000107366")
+    Assign_team = "Sel Seg CM"
+   
+    'Offshorepath Production path
+    CreateSDTktPath = "\\GVOFSXXPW002\TrackingTools\Working\Production\exe\OutlookHPSMCreateSD.exe"
+    RetrieveIMTktPath = "\\GVOFSXXPW002\TrackingTools\Working\Production\exe\OutlookHPSMRetrieveIM.exe"
+    RelateTktPath = "\\GVOFSXXPW002\TrackingTools\Working\Production\exe\Update_Relations.exe"
+    UpdTktDescPath = "\\GVOFSXXPW002\TrackingTools\Working\Production\exe\HPSM_ModifyIM_Description.exe"
+    MdfyTktPath = "\\GVOFSXXPW002\TrackingTools\Working\Production\exe\IM_Modify_Assignee_State.exe"
+    
+    'Validations
+    If (Len(CreateSDTktPath) < 8) Then
+        MsgBox "Executable file path is missing"
+        Exit Sub
+    ElseIf (Len(xuser) <> 9) Then
+        MsgBox "Unable to fetch the User ID."
+        Exit Sub
+    ElseIf (pkggrp = "") Then
+        MsgBox "can't fetch package group from this mail"
+        Exit Sub
+    ElseIf (State = "") Then
+        MsgBox "Unable to fetch the State from this mail."
+        Exit Sub
+    ElseIf (Assign_team = "") Then
+        MsgBox "Note: Assignment team is empty."
+        Exit Sub
+    'list of support groups: Prod Svc DBA-MIDRANG, OneSource Deployments, Sel Seg Infrastructure, Sel Seg Build Team, Sel Seg CDM, Online View Services
+    ElseIf (Trim(suppgrp) <> "Prod Svc DBA-MIDRANG" And _
+            Trim(suppgrp) <> "Proj Svc DB Eng Midrange" And _
+            Trim(suppgrp) <> "OneSource Deployments" And _
+            Trim(suppgrp) <> "Sel Seg Infrastructure" And _
+            Trim(suppgrp) <> "GW HC INF Ops" And _
+            Trim(suppgrp) <> "Sel Seg Build Team" And _
+            Trim(suppgrp) <> "Sel Seg CDM" And _
+            Trim(suppgrp) <> "Online View Services") Then
+        MsgBox "There is no proper support group to create ticket"
+        Exit Sub
+    End If
+    'Assigning HPSM Auto-Routing name for each support group
+    If (Trim(suppgrp) = "Prod Svc DBA-MIDRANG") Then
+        suppgrpname = "DBA"
+        suppgrp = "LODO_DBA_Requests"
+    ElseIf (Trim(suppgrp) = "Proj Svc DB Eng Midrange") Then
+        suppgrpname = "DBA"
+    ElseIf (Trim(suppgrp) = "OneSource Deployments") Then
+        suppgrpname = "DBA"
+        suppgrp = "OneSource_DBA_Requests"
+    ElseIf (Trim(suppgrp) = "Sel Seg Infrastructure") Then
+        suppgrpname = "DBA"
+        suppgrp = "App_DBA_Requests"
+    ElseIf (suppgrp = "Sel Seg Build Team") Then
+        suppgrpname = "SSBT"
+        suppgrp = "Facets_Build_Team_Request"
+    ElseIf (suppgrp = "Sel Seg CDM") Then
+        suppgrpname = "CDM"
+        suppgrp = "CDM_Requests"
+    ElseIf (suppgrp = "GW HC INF Ops") Then
+        suppgrpname = "INFA"
+        suppgrp = "INFA_Requests"
+    ElseIf (suppgrp = "Online View Services") Then
+        suppgrpname = "OVS"
+        suppgrp = "OVS_Requests"
+    End If
+                
+    ParentIm = "IM" & imticket
+    If (cmticket <> "") Then
+        genCMtkt = "<CM" & cmticket & ">"
+        subjt = Split(getcurrentitem, genCMtkt)
+        newsubject = subjt(1)
+    ElseIf (imticket <> "") Then
+        genIMtkt = "<IM" & imticket & ">"
+        subjt = Split(getcurrentitem, genIMtkt)
+        newsubject = subjt(1)
+    Else
+        newsubject = getcurrentitem
+    End If
+    newsubject = "(" & suppgrpname & ")" & newsubject
+    'If (UCase(Trim(TktStatus)) = "OPEN") Then
+    If (Trim(TicketReq) <> "T") And (Trim(TktStatus) = "Open") Then
+        'Calling EXE to create a SD ticket
+        SDTktVal = wsh.Run("""" & CreateSDTktPath & """ """ & xuser & """ """ & pkggrp & """ """ & State & """ """ & suppgrp & """ """ & clarity_val & """ """ & _
+                        dba_val & """ """ & dbinst_val & """ """ & infrep_val & """ """ & stage_val & """ """ & WI_val & """ """ & WIcrtr_val & """ """ & _
+                        WIdlgt_val & """ """ & WR_val & """ """ & newsubject & """ """ & deploy_val & """ """ & Rally_val & """", windowStyle, waitOnReturn)
+        SDTicket = "SD" & SDTktVal
+        
+        'Calling EXE to Retrieve the IM ticket created for SD ticket
+        IMTktVal = wsh.Run("""" & RetrieveIMTktPath & """ """ & SDTicket & """", windowStyle, waitOnReturn)
+    
+        'If success
+        If (IMTktVal <> -303) Then
+            Set objDoc = Application.ActiveInspector.WordEditor
+            Dim im As String
+            ChildIm = "IM" & IMTktVal
+            Set objSel = objDoc.Windows(1).Selection
+            objSel.MoveLeft Unit:=wdCell
+            objSel.TypeText Text:=ChildIm  ' this should enter the im number to the cell
+            objSel.MoveDown Unit:=wdLine
+            objSel.EndKey Unit:=wdLine
+            'Relate the child ticket with Parent ticket
+            RelateIM = wsh.Run("""" & RelateTktPath & """ """ & ParentIm & """ """ & ChildIm & """", windowStyle, waitOnReturn)
+            If (RowCnt = 1) Then
+                If (OBIEEUnixpath <> "") Then
+                   instrpath = instrpath & Chr(10) & Chr(10) & "UNIX Staging Area:" & Chr(10) & OBIEEUnixpath
+                End If
+                'Calling EXE to Update the Description of the Parent ticket
+                UpdateIM = wsh.Run("""" & UpdTktDescPath & """ """ & ParentIm & """ """ & pkggrp & """ """ & State & """ """ & Description & """ """ & _
+                                stage_val1 & """ """ & instrpath & """", windowStyle, waitOnReturn)
+                TktStatus = "Monitoring"
+                'Calling EXE to Change the Status of the Parent ticket
+                StatusIM = wsh.Run("""" & MdfyTktPath & """ """ & ParentIm & """ """ & UserId & """ """ & TktStatus & """", windowStyle, waitOnReturn)
+            End If
+        Else
+            MsgBox "Error in creating HPSM Ticket" & suppgrp
+        End If
+    Else
+        If (RowCnt = 1) Then
+             If (OBIEEUnixpath <> "") Then
+                instrpath = instrpath & Chr(10) & Chr(10) & "UNIX Staging Area:" & Chr(10) & OBIEEUnixpath
+             End If
+            'Calling EXE to Update the Description of the Parent ticket
+            UpdateIM = wsh.Run("""" & UpdTktDescPath & """ """ & ParentIm & """ """ & pkggrp & """ """ & State & """ """ & Description & """ """ & _
+                                stage_val1 & """ """ & instrpath & """", windowStyle, waitOnReturn)
+            TktStatus = "Monitoring"
+            'Calling EXE to Change the Status of the Parent ticket
+            StatusIM = wsh.Run("""" & MdfyTktPath & """ """ & ParentIm & """ """ & UserId & """ """ & TktStatus & """", windowStyle, waitOnReturn)
+        End If
+    End If
+End Sub
+
+
+
+
+
+
+
+
+
